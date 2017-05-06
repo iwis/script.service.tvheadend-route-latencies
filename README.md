@@ -21,20 +21,25 @@ Add-on can be installed on Windows, Linux (including LibreELEC) and Android TV.
 ~~2. In Kodi go to *Add-ons > Download > Install from repository > Program add-ons*.~~
 ~~3. Select *Tvheadend route latencies* add-on.~~
 ~~4. Press *Install* button.~~
+
 If you want to run this add-on then:
-1. Download the add-on in a zip file.
-2. Install add-on from a zip file.
+1. Download the add-on in [a zip file](https://github.com/iwis/script.service.tvheadend-route-latencies/archive/master.zip).
+2. Inside the zipped file rename *script.service.tvheadend-route-latencies-master* directory to *script.service.tvheadend-route-latencies*.
+3. Rename *script.service.tvheadend-route-latencies-master.zip* file to *script.service.tvheadend-route-latencies.zip*
+4. Install add-on from the zip file.
 
 Usage
 -----
 1. It is best to test latencies while watching TV thus play some channel from Tvheadend server.
-2. Run *Tvheadend route latencies* add-on by selecting it in *Add-ons > Program add-ons > Tvheadend route latencies*
+2. Run *Tvheadend route latencies* add-on by selecting it in *Add-ons > Program add-ons > Tvheadend route latencies*.
 3. After displaying dialog box wait about 30 seconds for the results.
 4. You can press *Check* button to check latencies again if you want.
 5. In the settings you can change:
   * *Test length* - how long the test will take, the default is 30 seconds,
-  * *Test concurrently* - whether all devices will be tested concurrently (4x faster) or not, the default is *on*,
+  * *Test concurrently* - whether all devices will be tested concurrently (4x faster) or not, the default is *On*,
   * *Address of nearby server in the Internet* - address of a device tested in the second step, the default is facebook.com.
+
+<img src="https://raw.githubusercontent.com/iwis/script.service.tvheadend-route-latencies/master/resources/screenshot-01.jpg" alt="Screenshot" width="683" height="384">
 
 Detailed description
 --------------------
@@ -62,6 +67,10 @@ More than 5% packets lost in any step is also incorrect.
 
 In Android TV there is no information about Gateway in Kodi > System information > Network > Gateway. This is why the first step is not tested.
 
+Support
+-------
+Support at the Kodi forum: [forum.kodi.tv/showthread.php?tid=313838](http://forum.kodi.tv/showthread.php?tid=313838)
+
 Development
 -----------
 Add-on was tested on Kodi 17 and on the following operating systems:
@@ -72,7 +81,7 @@ Add-on was tested on Kodi 17 and on the following operating systems:
 
 If you want to run this add-on on a system different than Windows and Linux then:
 1. Download the add-on in a zip file.
-2. Set <platform>all</platform> in addon.xml file.
+2. Set `<platform>all</platform>` in addon.xml file.
 3. Install add-on from a zip file.
 4. Test if it works well.
 
