@@ -2,7 +2,7 @@ Tvheadend route latencies
 =========================
 This Kodi add-on shows latency (RTT) and packets loss to consecutive steps on the way from Kodi to Tvheadend server. It can be used when network quality cause problems during watching TV streaming from Tvheadend. The problem can be in:
   * Kodi computer's local network,
-  * connection between Kodi computer's local network and its Internet Servce Provider (ISP),
+  * connection between Kodi computer's local network and its Internet Service Provider (ISP),
   * connection between Tvheadend computer's local network and its ISP,
   * Tvheadend computer's local network,
   * the route between both ISPs.

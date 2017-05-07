@@ -22,14 +22,15 @@ def lang(id):
     return __addon__.getLocalizedString(id)
 
 #Sends ping to the computer with the given address - every second and for sec seconds.
-#Returns string: average round trip time in localized format: "dd[.ddd] ms[, dd% packets loss]" or localized string "no connection" if there was no response.
+#Returns string: average round trip time in localized format: "dd[.ddd] ms[, dd% packets loss]"
+#                or localized string "no connection" if there was no response.
 def ping(hostname, sec):
     if platform.system() == "Windows":  #tested on Win10
         ping_command = 'ping -n '+str(sec)+' '+hostname
         ping_regex   = '[0-9.]+ ?ms.+ [0-9.]+ ?ms.+ ([0-9.]+) ?ms'
     else:  #tested on Linux Mint
         ping_command = 'ping -c '+str(sec)+' '+hostname
-        ping_regex   = '[0-9.]+/([0-9.]+)/[0-9.]+'       #LibreELEC doesn't output mdev; Debian (with derivatives) and macOS outputs it (it won't be matched)
+        ping_regex   = '[0-9.]+/([0-9.]+)/[0-9.]+' #LibreELEC doesn't output mdev; Debian (with derivatives) and macOS outputs it (won't be matched)
     if xbmc.getCondVisibility('system.platform.android'): #patch for Android (for example for Android TV 6)
         result = subprocess.Popen(ping_command, shell=True, executable="/system/bin/sh", stdout=subprocess.PIPE).stdout.read()
     else:
@@ -43,8 +44,10 @@ def ping(hostname, sec):
         latency = m2.group(1) + " ms" + ("" if packet_loss == "0%" else ", " + packet_loss + " " + lang(32131))  #"packets loss"
     return latency
 
-#Tries to download the main page ("/") from the server with the given url (should be in "hostname[:port]" format) - every 10 seconds and no longer than sec seconds.
-#Returns string: average round trip time in localized format: "dd.d ms[, dd% packets loss]" or localized string "no connection" if there was no response.
+#Tries to download the main page ("/") from the server with the given url (should be in "hostname[:port]" format)
+# - every 10 seconds and no longer than sec seconds.
+#Returns string: average round trip time in localized format: "dd.d ms[, dd% packets loss]"
+#                or localized string "no connection" if there was no response.
 #It works by analogy to ping(hostname, sec). I used it once when I couldn't use ping.
 def http_rtt(url, sec):
     url = 'http://' + url
@@ -71,7 +74,7 @@ def http_rtt(url, sec):
     if total_answers == 0:
         latency = lang(32130)  #"no connection"
     else:
-        latency = format(total_time * 1000 / total_answers, '.1f') + " ms" #convert seconds to milliseconds, calculate average and round to one decimal place
+        latency = format(total_time*1000/total_answers, '.1f') + " ms" #convert seconds to ms, calculate average, round to 1 decimal place
         if packet_loss != 0:
             latency += ", " + str(packet_loss*100/total_requests) + "% " + lang(32131)  #"packets loss"
     return latency
@@ -94,11 +97,11 @@ class TVNetworkHealthWindow(pyxbmct.AddonDialogWindow):
             backend_router  = __tvhaddon__.getSetting("host")
             backend_service = backend_router + ":" + __tvhaddon__.getSetting("http_port")
 
-            #---------- window layout: grid of 5 rows and 3 columns plus "Check" and "Close" buttons at the bottom (no logic) ----------
+            #----- window layout: grid of 5 rows and 3 columns plus "Check" and "Close" buttons at the bottom (no logic) -----
             self.setGeometry(950, 300, 6, 3)  #width, height, rows, columns
             
             #create controls and place them in the window
-            self.grid = [[lang(32101),         lang(32102),     lang(32103)],  #"Device"                    "Address"   "Latency (Kodi <-> Device)"
+            self.grid = [[lang(32101),         lang(32102),     lang(32103)],  #Device"                    "Address" "Latency (Kodi <-> Device)"
                          ["1. " + lang(32104), local_router,    ""         ],  #"Local network router"    
                          ["2. " + lang(32105), internet_server, ""         ],  #"Nearby Internet server"
                          ["3. " + lang(32106), backend_router,  ""         ],  #"Tvheadend server's router"
