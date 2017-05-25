@@ -14,7 +14,7 @@ To run this add-on you will need *Tvheadend HTSP client* add-on.
 
 Installation
 ------------
-Add-on can be installed on Windows, Linux (including LibreELEC) and Android TV.
+Add-on can be installed on Windows, Linux (including LibreELEC) and Android (including Android TV).
 
 ~~Add-on can be installed in a standard way from the standard Kodi repository.~~
 ~~1. Make sure that you have *Tvheadend HTSP client* add-on.~~
@@ -65,7 +65,7 @@ Generally, the following latencies are incorrect:
 
 More than 5% packets lost in any step is also incorrect.
 
-In Android TV there is no information about Gateway in Kodi > System information > Network > Gateway. This is why the first step is not tested.
+In Android (and Android TV) there is no information about Gateway in Kodi > System information > Network > Gateway. This is why the first step is not tested.
 
 Support
 -------
@@ -77,9 +77,12 @@ Add-on was tested on Kodi 17 and on the following operating systems:
   * Windows 10 32-bit
   * Linux Mint 18.1 64-bit
   * LibreELEC 8
+  * Android 7.0
   * Android TV 6
 
-If you want to run this add-on on a system different than Windows and Linux then:
+Latencies measured in 4th step on tested smartphone with Android were larger than on other devices. I do not know what was the reason.
+
+If you want to run this add-on on macOS or iOS then:
 1. Download the add-on in a zip file.
 2. Set `<platform>all</platform>` in addon.xml file.
 3. Install add-on from a zip file.
