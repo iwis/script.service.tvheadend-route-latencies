@@ -23,6 +23,7 @@ def lang(string_id):
 #Returns string: average round trip time in localized format: "dd[.ddd] ms[, dd% packets loss]"
 #                or localized string "no connection" if there was no response.
 def ping(hostname, sec):
+    if re.match('^[a-zA-Z0-9.:-]{1,253}$', hostname) is None: return lang(32129)  #"incorrect address format"
     if platform.system() == "Windows":  #tested on Win10
         ping_command = 'ping -n '+str(sec)+' '+hostname
         ping_regex   = '[0-9.]+ ?ms.+ [0-9.]+ ?ms.+ ([0-9.]+) ?ms'
@@ -48,6 +49,7 @@ def ping(hostname, sec):
 #                or localized string "no connection" if there was no response.
 #It works by analogy to ping(hostname, sec). I used it once when I couldn't use ping.
 def http_rtt(url, sec):
+    if re.match('^[a-zA-Z0-9.:-]{1,253}$', url) is None: return lang(32129)  #"incorrect address format"
     url = 'http://' + url
     wait_sec = 10                                  #number of seconds to wait between requests
     total_requests = 1 + sec/wait_sec              #number of request that will be sent

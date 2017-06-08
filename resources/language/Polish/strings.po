@@ -69,6 +69,10 @@ msgid "Close"
 msgstr "Zamknij"
 
 #messages
+msgctxt "#32129"
+msgid "incorrect address format"
+msgstr "niepoprawny format adresu"
+
 msgctxt "#32130"
 msgid "no connection"
 msgstr "brak połączenia"
