@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sys
 import platform
 import subprocess
 import requests
@@ -10,7 +9,6 @@ import time
 from timeit import default_timer as timer
 import xbmc
 import xbmcaddon
-import xbmcgui
 import pyxbmct
 
 __addon__     = xbmcaddon.Addon()              #this addon
@@ -18,8 +16,8 @@ __addonpath__ = xbmc.translatePath(__addon__.getAddonInfo('path')).decode('utf-8
 __tvhaddon__  = xbmcaddon.Addon(id='pvr.hts')  #Tvheadend addon
 
 #Returns string with given ID localized in the current language
-def lang(id):
-    return __addon__.getLocalizedString(id)
+def lang(string_id):
+    return __addon__.getLocalizedString(string_id)
 
 #Sends ping to the computer with the given address - every second and for sec seconds.
 #Returns string: average round trip time in localized format: "dd[.ddd] ms[, dd% packets loss]"
@@ -59,7 +57,7 @@ def http_rtt(url, sec):
     s = requests.Session()
     try:
         s.get(url, timeout=5).text                 #make a TCP connection to speed up proper requests
-    except:
+    except requests.RequestException:
         pass
     time.sleep(1)                                  #be nice
     for i in range(0, total_requests):
@@ -69,7 +67,7 @@ def http_rtt(url, sec):
             total_time += timer() - start
             total_answers += 1
             if i != total_requests - 1: time.sleep(wait_sec)  #wait <wait_sec> seconds
-        except:                                    #the web page could not be downloaded in <timeout> seconds
+        except requests.RequestException:          #the web page could not be downloaded in <timeout> seconds
             packet_loss += 1
     if total_answers == 0:
         latency = lang(32130)  #"no connection"
@@ -99,10 +97,10 @@ class TVNetworkHealthWindow(pyxbmct.AddonDialogWindow):
 
             #----- window layout: grid of 5 rows and 3 columns plus "Check" and "Close" buttons at the bottom (no logic) -----
             self.setGeometry(950, 300, 6, 3)  #width, height, rows, columns
-            
+
             #create controls and place them in the window
             self.grid = [[lang(32101),         lang(32102),     lang(32103)],  #Device"                    "Address" "Latency (Kodi <-> Device)"
-                         ["1. " + lang(32104), local_router,    ""         ],  #"Local network router"    
+                         ["1. " + lang(32104), local_router,    ""         ],  #"Local network router"
                          ["2. " + lang(32105), internet_server, ""         ],  #"Nearby Internet server"
                          ["3. " + lang(32106), backend_router,  ""         ],  #"Tvheadend server's router"
                          ["4. " + lang(32107), backend_service, ""         ]]  #"Tvheadend server (TCP)"
@@ -110,10 +108,10 @@ class TVNetworkHealthWindow(pyxbmct.AddonDialogWindow):
                 for col in range(len(self.grid[0])):
                     self.grid[row][col] = pyxbmct.Label(self.grid[row][col])  #now it is a grid of labels
                     self.placeControl(self.grid[row][col], row, col)
-            
+
             self.button1 = pyxbmct.Button(lang(32120)); self.placeControl(self.button1, 5, 0, 1, 1)  #"Check"
             self.button2 = pyxbmct.Button(lang(32121)); self.placeControl(self.button2, 5, 1, 1, 1)  #"Close"
-            
+
             #actions
             self.connect(self.button1,            self.check)
             self.connect(self.button2,            self.close)
@@ -122,25 +120,25 @@ class TVNetworkHealthWindow(pyxbmct.AddonDialogWindow):
             #navigation between buttons
             self.button1.controlLeft(self.button2);  self.button2.controlLeft(self.button1)
             self.button1.controlRight(self.button2); self.button2.controlRight(self.button1)
-            
-            #--------------- check network health on startup --------------- 
+
+            #--------------- check network health on startup ---------------
             self.show()
             self.check()
-            
+
             #initial focus
             self.setFocus(self.button1)
         except Exception as msg:
             xbmc.log("AddOnLog: Tvheadend route latencies: " + str(msg), level=xbmc.LOGDEBUG)
-    
+
     #Calculate latencies
     def task(self, i): #i = 1...4
         rtt_method = ping if i != 4 else http_rtt
         self.grid[i][2].setLabel(rtt_method(self.grid[i][1].getLabel(), self.testlength))
-    
+
     def checkSingleThreaded(self):
         for i in [1, 2, 3, 4]:
             self.task(i)
-    
+
     def checkMultiThreaded(self):
         threads = [threading.Thread(target=self.task, args=(i,)) for i in [1, 2, 3, 4]]  #create a list of threads
         for t in threads:
