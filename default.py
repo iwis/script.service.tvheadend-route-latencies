@@ -11,13 +11,12 @@ import xbmc
 import xbmcaddon
 import pyxbmct
 
-__addon__     = xbmcaddon.Addon()              #this addon
-__addonpath__ = xbmc.translatePath(__addon__.getAddonInfo('path')).decode('utf-8')
-__tvhaddon__  = xbmcaddon.Addon(id='pvr.hts')  #Tvheadend addon
+ADDON     = xbmcaddon.Addon()              #this addon
+TVH_ADDON = xbmcaddon.Addon(id='pvr.hts')  #Tvheadend addon
 
 #Returns string with given ID localized in the current language
 def lang(string_id):
-    return __addon__.getLocalizedString(string_id)
+    return ADDON.getLocalizedString(string_id)
 
 #Sends ping to the computer with the given address - every second and for sec seconds.
 #Returns string: average round trip time in localized format: "dd[.ddd] ms[, dd% packets loss]"
@@ -52,7 +51,7 @@ def http_rtt(url, sec):
     if re.match('^[a-zA-Z0-9.:-]{1,253}$', url) is None: return lang(32129)  #"incorrect address format"
     url = 'http://' + url
     wait_sec = 10                                  #number of seconds to wait between requests
-    total_requests = 1 + sec/wait_sec              #number of request that will be sent
+    total_requests = 1 + sec/wait_sec              #number of requests that will be sent
     total_answers  = 0
     packet_loss    = 0
     total_time     = 0
@@ -89,13 +88,13 @@ class TVNetworkHealthWindow(pyxbmct.AddonDialogWindow):
     def __init__(self):
         super(TVNetworkHealthWindow, self).__init__("Tvheadend route latencies")
         try:  #comment it temporary to see detailed log in case of errors
-            self.testlength = int(__addon__.getSetting("testlength"))  #how long a single test will take
+            self.testlength = int(ADDON.getSetting("testlength"))  #how long a single test will take
 
             #--------------- IP addresses of consecutive routers and servers ---------------
             local_router    = xbmc.getInfoLabel('Network.GatewayAddress')
-            internet_server = __addon__.getSetting("nearby_internet_server")
-            backend_router  = __tvhaddon__.getSetting("host")
-            backend_service = backend_router + ":" + __tvhaddon__.getSetting("http_port")
+            internet_server = ADDON.getSetting("nearby_internet_server")
+            backend_router  = TVH_ADDON.getSetting("host")
+            backend_service = backend_router + ":" + TVH_ADDON.getSetting("http_port")
 
             #----- window layout: grid of 5 rows and 3 columns plus "Check" and "Close" buttons at the bottom (no logic) -----
             self.setGeometry(950, 300, 6, 3)  #width, height, rows, columns
@@ -151,7 +150,7 @@ class TVNetworkHealthWindow(pyxbmct.AddonDialogWindow):
     def check(self):
         self.grid[1][1].setLabel(xbmc.getInfoLabel('Network.GatewayAddress'))  #update address of local router in case of change
         self.button1.setEnabled(False)
-        if (__addon__.getSetting("testconcurrently") == "true"):
+        if (ADDON.getSetting("testconcurrently") == "true"):
             self.checkMultiThreaded()
         else:
             self.checkSingleThreaded()
