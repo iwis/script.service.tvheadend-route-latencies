@@ -5,7 +5,6 @@ import subprocess
 import requests
 import re
 import threading
-import time
 from timeit import default_timer as timer
 import xbmc
 import xbmcaddon
@@ -36,11 +35,12 @@ def ping(hostname, sec):
     m1 = re.search('([0-9.]+)%', result)                 #% packet loss
     m2 = re.search(ping_regex, result)                   #avg ms
     if m2 is None: #no network connection or 100% packet loss
-        latency = lang(32130)  #"no connection"
+        return lang(32130)  #"no connection"
     else: #we received at least one ping packet
         packet_loss = m1.group(1) + "%"
         latency = m2.group(1) + " ms" + ("" if packet_loss == "0%" else ", " + packet_loss + " " + lang(32131))  #"packets loss"
-    return latency
+        if latency == '0 ms': latency = '<1 ms' #patch for Windows
+        return latency
 
 #Tries to download the main page ("/") from the server with the given url (should be in "hostname[:port]" format)
 # - every 10 seconds and no longer than sec seconds.
@@ -60,23 +60,23 @@ def http_rtt(url, sec):
         s.get(url, timeout=5).text                 #make a TCP connection to speed up proper requests
     except requests.RequestException:
         pass
-    time.sleep(1)                                  #be nice
+    xbmc.sleep(1000)                               #be nice
     for i in range(0, total_requests):
         try:
             start = timer()
             s.get(url, timeout=5).text             #thanks to .text the session can be closed when not needed
             total_time += timer() - start
             total_answers += 1
-            if i != total_requests - 1: time.sleep(wait_sec)  #wait <wait_sec> seconds
+            if i != total_requests - 1: xbmc.sleep(1000*wait_sec)  #wait <wait_sec> seconds
         except requests.RequestException:          #the web page could not be downloaded in <timeout> seconds
             packet_loss += 1
     if total_answers == 0:
-        latency = lang(32130)  #"no connection"
+        return lang(32130)  #"no connection"
     else:
         latency = format(total_time*1000/total_answers, '.1f') + " ms" #convert seconds to ms, calculate average, round to 1 decimal place
         if packet_loss != 0:
             latency += ", " + str(packet_loss*100/total_requests) + "% " + lang(32131)  #"packets loss"
-    return latency
+        return latency
 
 #Shows latency (RTT) and packets loss to consecutive steps on the way from Kodi to Tvheadend server.
 #For more info see description in the README.md file.
@@ -144,7 +144,7 @@ class TVNetworkHealthWindow(pyxbmct.AddonDialogWindow):
         threads = [threading.Thread(target=self.task, args=(i,)) for i in [1, 2, 3, 4]]  #create a list of threads
         for t in threads:
             t.start()
-            time.sleep(0.25)           #wait 250ms to not sent requests to all devices in the same moment at the beginning
+            xbmc.sleep(250)            #wait 250ms to not sent requests to all devices in the same moment at the beginning
         for t in threads: t.join()     #wait until all threads finish
 
     def check(self):
