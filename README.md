@@ -16,17 +16,17 @@ Installation
 ------------
 Add-on can be installed on Windows, Linux (including LibreELEC) and Android (including Android TV).
 
-~~Add-on can be installed in a standard way from the standard Kodi repository.~~
-~~1. Make sure that you have *Tvheadend HTSP client* add-on.~~
-~~2. In Kodi go to *Add-ons > Download > Install from repository > Program add-ons*.~~
-~~3. Select *Tvheadend route latencies* add-on.~~
-~~4. Press *Install* button.~~
+Add-on can be installed in a standard way from the standard Kodi repository:
+1. Make sure that you have *Tvheadend HTSP client* add-on.
+2. In Kodi go to *Add-ons > Install from repository > Program add-ons*.
+3. Select *Tvheadend route latencies* add-on.
+4. Press *Install* button.
 
-If you want to run this add-on then:
+Alternatively the add-on can be installed from a ZIP file downloaded from this page:
 1. Download the add-on in [a zip file](https://github.com/iwis/script.service.tvheadend-route-latencies/archive/master.zip).
 2. Inside the zipped file rename *script.service.tvheadend-route-latencies-master* directory to *script.service.tvheadend-route-latencies*.
 3. Rename *script.service.tvheadend-route-latencies-master.zip* file to *script.service.tvheadend-route-latencies.zip*
-4. Install add-on from the zip file.
+4. Install add-on from the zip file in a standard way.
 
 Usage
 -----
